@@ -1,0 +1,276 @@
+<workflow-app xmlns="uri:oozie:workflow:0.3" name="generate-customersegmentation">
+	<start to="importDigitalOffer"/>
+	
+	<action name="importDigitalOffer">
+	                <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+	                        <job-tracker>${jobTracker}</job-tracker>
+	                        <name-node>${nameNode}</name-node>
+	                        <prepare>
+				<delete path="${IMPORT_DIGL_OFFR_PATH}"/>
+                                </prepare>
+	                        <configuration>
+	                                <property>
+	                                        <name>mapreduce.job.queuename</name>
+	                                        <value>${queueName}</value>
+	                                </property>	
+	                          </configuration>                        
+	                          <arg>import</arg>
+                                  <arg>--connect</arg>
+                                  <arg>${CONNECTION_STRING_RMDW}</arg>
+                                  <arg>--username</arg>
+                                  <arg>${USERNAME_RMDW}</arg>
+                                  <arg>--password</arg>
+                                  <arg>${PASSWORD_RMDW}</arg>
+                                  <arg>--driver</arg>
+                                  <arg>${DRIVER}</arg>
+                                  <arg>--table</arg>
+                                  <arg>${TABLE_DIGL_OFFR}</arg>
+                                  <arg>--target-dir</arg>
+                                  <arg>${IMPORT_DIGL_OFFR_PATH}</arg>
+                                  <arg>--fields-terminated-by</arg>
+                                  <arg>|</arg>
+                                  <arg>--hive-delims-replacement</arg>
+                                  <arg> </arg>
+                                  <arg>-m</arg>
+                                  <arg>${NUMBER_OF_MAPPERS}</arg>                      
+	                </sqoop>
+	                <ok to="importAdvtHierarachy"/>
+	                <error to="fail"/>
+        </action>
+        <action name="importAdvtHierarachy">
+		                <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+		                        <job-tracker>${jobTracker}</job-tracker>
+		                        <name-node>${nameNode}</name-node>
+		                        <prepare>
+				        <delete path="${IMPORT_ADVT_HRCY_PATH}"/>
+                                        </prepare>
+		                        <configuration>
+		                                <property>
+		                                        <name>mapreduce.job.queuename</name>
+		                                        <value>${queueName}</value>
+		                                </property>	
+		                          </configuration>                        
+		                          <arg>import</arg>
+	                                  <arg>--connect</arg>
+	                                  <arg>${CONNECTION_STRING_TABLEAU}</arg>
+	                                  <arg>--username</arg>
+	                                  <arg>${USERNAME}</arg>
+	                                  <arg>--password</arg>
+	                                  <arg>${PASSWORD }</arg>
+	                                  <arg>--driver</arg>
+	                                  <arg>${DRIVER}</arg>
+	                                  <arg>--table</arg>
+	                                  <arg>${TABLE_ADVT_COOP_HRCY}</arg>
+	                                  <arg>--target-dir</arg>
+	                                  <arg>${IMPORT_ADVT_HRCY_PATH}</arg>
+	                                  <arg>--fields-terminated-by</arg>
+                                          <arg>${FIELD_SEPERATOR}</arg>
+	                                  <arg>-m</arg>
+	                                  <arg>${NUMBER_OF_MAPPERS}</arg>                      
+		                </sqoop>
+		                <ok to="importCalDate"/>
+		                <error to="fail"/>
+        </action>
+        
+        <action name="importCalDate">
+		 	                <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+		 	                        <job-tracker>${jobTracker}</job-tracker>
+		 	                        <name-node>${nameNode}</name-node>
+		 	                        <prepare>
+				                <delete path="${IMPORT_CAL_DATE_PATH}"/>
+                                                </prepare>
+		 	                        <configuration>
+		 	                                <property>
+		 	                                        <name>mapreduce.job.queuename</name>
+		 	                                        <value>${queueName}</value>
+		 	                                </property>	
+		 	                        </configuration>                        
+		 	                      		                          <arg>import</arg>
+	                                  <arg>--connect</arg>
+	                                  <arg>${CONNECTION_STRING_RMDW}</arg>
+	                                  <arg>--username</arg>
+					  <arg>${USERNAME_RMDW}</arg>
+					  <arg>--password</arg>
+                                          <arg>${PASSWORD_RMDW}</arg>
+	                                  <arg>--driver</arg>
+	                                  <arg>${DRIVER}</arg>
+	                                  <arg>--table</arg>
+	                                  <arg>${TABLE_CAL_DT}</arg>
+	                                  <arg>--where</arg>
+	                                  <arg>${TABLE_CAL_DT_FILTER}</arg>
+	                                  <arg>--target-dir</arg>
+	                                  <arg>${IMPORT_CAL_DATE_PATH}</arg>
+	                                  <arg>--fields-terminated-by</arg>
+                                          <arg>${FIELD_SEPERATOR}</arg>
+	                                  <arg>-m</arg>
+	                                  <arg>${NUMBER_OF_MAPPERS}</arg>                       
+		 	                </sqoop>
+		 	                <ok to="importFamilyGroup"/>
+		                 <error to="fail"/>
+         </action>
+         
+          <action name="importFamilyGroup">
+	 	                <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+	 	                        <job-tracker>${jobTracker}</job-tracker>
+	 	                        <name-node>${nameNode}</name-node>
+	 	                        <prepare>
+	 			        <delete path="${IMPORT_PRODUCT_FAMILY_PATH}"/>
+	                                </prepare>
+	 	                        <configuration>
+	 	                                <property>
+	 	                                        <name>mapreduce.job.queuename</name>
+	 	                                        <value>${queueName}</value>
+	 	                                </property>	
+	 	                        </configuration>                        
+	 	                          <arg>import</arg>
+	                                  <arg>--connect</arg>
+	                                  <arg>${CONNECTION_STRING_MSTR}</arg>
+	                                  <arg>--username</arg>
+	                                  <arg>${USERNAME}</arg>
+	                                  <arg>--password</arg>
+	                                  <arg>${PASSWORD }</arg>
+	                                  <arg>--driver</arg>
+	                                  <arg>${DRIVER}</arg>
+	                                  <arg>--query</arg>
+	                                  <arg>${TABLE_MSTR_QUERY}</arg>
+	                                  <arg>--target-dir</arg>
+	                                  <arg>${IMPORT_PRODUCT_FAMILY_PATH}</arg>
+	                                  <arg>--fields-terminated-by</arg>
+                                          <arg>${FIELD_SEPERATOR}</arg>
+	                                  <arg>-m</arg>
+	                                  <arg>${NUMBER_OF_MAPPERS}</arg>                             
+	 	                </sqoop>
+	 	                <ok to="loadDiglOffrTable"/>
+	                 <error to="fail"/>
+         </action>  
+         
+         <action name="loadDiglOffrTable">
+	                 <hive xmlns="uri:oozie:hive-action:0.2">
+	                         <job-tracker>${jobTracker}</job-tracker>
+	                         <name-node>${nameNode}</name-node>
+	                         <configuration>
+	                                 <property>
+	                                 <name>oozie.hive.defaults</name>
+	                                  <value>${oozie_app_path}/hive-config.xml</value>
+	                                 </property>
+	                                  <property>
+	                                         <name>hive.metastore.uris</name>
+	                                         <value>thrift://hdp001-6:9083,thrift://hdp001-7:9083</value>
+	                                 </property>
+	                                 <property>
+	                                         <name>mapreduce.job.queuename</name>
+	                                         <value>prod</value>
+	                                 </property>
+	 
+	                         </configuration>
+	                         <script>DIGL_OFFR.hive</script>
+	                 </hive>
+	                 <ok to="loadAdvtHierarachyTable"/>
+	                 <error to="fail"/>
+        </action>
+        <action name="loadAdvtHierarachyTable">
+				                 <hive xmlns="uri:oozie:hive-action:0.2">
+				                         <job-tracker>${jobTracker}</job-tracker>
+				                         <name-node>${nameNode}</name-node>
+				                         <configuration>
+				                                 <property>
+				                                 <name>oozie.hive.defaults</name>
+				                                  <value>${oozie_app_path}/hive-config.xml</value>
+				                                 </property>
+				                                  <property>
+				                                         <name>hive.metastore.uris</name>
+				                                         <value>thrift://hdp001-6:9083,thrift://hdp001-7:9083</value>
+				                                 </property>
+				                                 <property>
+				                                         <name>mapreduce.job.queuename</name>
+				                                         <value>prod</value>
+				                                 </property>
+				 
+				                         </configuration>
+				                         <script>ADVT_COOP_HRCY.hive</script>
+				                 </hive>
+				                 <ok to="loadCalDTTable"/>
+				                 <error to="fail"/>
+        </action>
+        
+        <action name="loadCalDTTable">
+		                 <hive xmlns="uri:oozie:hive-action:0.2">
+		                         <job-tracker>${jobTracker}</job-tracker>
+		                         <name-node>${nameNode}</name-node>
+		                         <configuration>
+		                                 <property>
+		                                 <name>oozie.hive.defaults</name>
+		                                  <value>${oozie_app_path}/hive-config.xml</value>
+		                                 </property>
+		                                  <property>
+		                                         <name>hive.metastore.uris</name>
+		                                         <value>thrift://hdp001-6:9083,thrift://hdp001-7:9083</value>
+		                                 </property>
+		                                 <property>
+		                                         <name>mapreduce.job.queuename</name>
+		                                         <value>prod</value>
+		                                 </property>
+		 
+		                         </configuration>
+		                         <script>CAL_DT.hive</script>
+		                 </hive>
+		                 <ok to="loadProductFamilyTable"/>
+		                 <error to="fail"/>
+        </action>
+        
+        <action name="loadProductFamilyTable">
+			                 <hive xmlns="uri:oozie:hive-action:0.2">
+			                         <job-tracker>${jobTracker}</job-tracker>
+			                         <name-node>${nameNode}</name-node>
+			                         <configuration>
+			                                 <property>
+			                                 <name>oozie.hive.defaults</name>
+			                                  <value>${oozie_app_path}/hive-config.xml</value>
+			                                 </property>
+			                                  <property>
+			                                         <name>hive.metastore.uris</name>
+			                                         <value>thrift://hdp001-6:9083,thrift://hdp001-7:9083</value>
+			                                 </property>
+			                                 <property>
+			                                         <name>mapreduce.job.queuename</name>
+			                                         <value>prod</value>
+			                                 </property>
+			 
+			                         </configuration>
+			                         <script>PRODUCT_FAMILY.hive</script>
+			                 </hive>
+			                 <ok to="emailnotification"/>
+			                 <error to="fail"/>
+        </action>
+        
+             	
+         
+	<action name="emailnotification">
+	                <java>
+	                        <job-tracker>${jobTracker}</job-tracker>
+	                        <name-node>${nameNode}</name-node>
+	                        <configuration>
+	                                <property>
+	                                        <name>mapreduce.job.queuename</name>
+	                                        <value>${queueName}</value>
+	                                </property>
+	                        </configuration>
+	                        <main-class>com.mcd.gdw.daas.util.DaaSProcessEmailNotifier</main-class>
+				<arg>${CONFIG_XML}</arg>
+	                        <arg>${EMAIL_FROM_ADDRESS}</arg>
+	                        <arg>${EMAIL_TO_ADDRESSES}</arg>
+	                        <arg>${EMAIL_SUBJECT}</arg>
+	                        <arg>${EMAIL_SUCCESS_TEXT}</arg>
+				
+	                </java>
+	
+	                <ok to="end"/>
+	                <error to="fail"/>
+        </action>
+	
+	<kill name="fail">
+		<message>Map/Reduce failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+	</kill>
+	<end name="end"/>
+
+</workflow-app>

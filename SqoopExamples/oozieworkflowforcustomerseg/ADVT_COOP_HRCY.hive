@@ -1,0 +1,17 @@
+use daastest;
+drop table ADVT_COOP_HRCY;
+CREATE EXTERNAL TABLE advt_coop_hrcy(
+    mcd_gbal_lcat_id_nu bigint, 
+    terr_cd int, 
+    advt_coop_lvl3_na string, 
+    advt_coop_lvl2_na string, 
+    advt_coop_lvl1_na string)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '|' 
+  LINES TERMINATED BY '\n' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  '/user/mc41946/hive/ADVT_COOP_HRCY';

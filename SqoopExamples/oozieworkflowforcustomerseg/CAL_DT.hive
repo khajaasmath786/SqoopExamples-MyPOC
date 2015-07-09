@@ -1,0 +1,40 @@
+use daastest;
+drop table CAL_DT;
+CREATE EXTERNAL TABLE CAL_DT(
+    cal_dt string, 
+    dspl_1_cal_dt string, 
+    dspl_2_cal_dt string, 
+    dspl_3_cal_dt string, 
+    dy_perd_nu int, 
+    dy_shrt_ds string, 
+    dy_ds string, 
+    dy_of_cal_wk_nu int, 
+    dy_of_cal_wk_ds string, 
+    yr_nu int, 
+    mo_nu int, 
+    wk_end_sun_id_nu int, 
+    wk_end_thu_id_nu int, 
+    wk_end_mon_id_nu int, 
+    wk_end_tue_id_nu int, 
+    wk_end_wed_id_nu int, 
+    wk_end_fri_id_nu int, 
+    wk_end_sat_id_nu int, 
+    cal_qtr_id_nu int, 
+    mo_perd_nu int, 
+    mo_dy_nu int, 
+    cal_smst_yr int, 
+    cal_qtr_yr int, 
+    cal_mo_yr int)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '|' 
+  LINES TERMINATED BY '\n' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  '/user/mc41946/hive/CAL_DT';
+
+
+
+

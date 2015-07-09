@@ -1,0 +1,48 @@
+
+My notes:
+
+1.  --hive-import --hive-table daastest.DIGL_OFFR --hive-drop-import-delims --hive-overwrite -m 1
+
+This will insert data into hive directly from Scoop command level tool. The same doesn't work if you are trying to acheive in Oozie. There is existing issue with Oozie and Sqoop.
+With Oozie, you have to download the data and then import data into hive using external table. See workflow.xml and properties file 
+
+2. Free form query: you can use --query
+--query should always use $CONDITIONS and cannot be imported into hive directly from Sqoop. You need to import first and then load into hive. Scoop and oozie are same for free from query
+
+3. Oozie with sqoop : facing issues with sqoop initailly , I added sqoop -import into the command which was not write using in oozie. Remove sqoop and then directly give the rest of command in oozie as we already have <Sqoop> tag.
+
+4. I faced problems with oozie while working with <command> in oozie so We went with <arg> approach in oozie. especially during oozie and if we have where conditions.
+
+5.*** Important. I was facing problems while importing data from Teradata into hdfs as it has new lines. I replaced new lines with space as this --hive-delims-replacement ' ' . This resolved 
+my issue. New line in record is replaced with space so I am getting exact number of records.
+
+
+
+-------------- Working
+
+sqoop import --driver com.teradata.jdbc.TeraDriver --connect 'jdbc:teradata://GDWPRODP/DATABASE=RMDW_tables' --username DCDS_HDP_010001 --password g0Hawks --table DIGL_OFFR --hive-import --hive-table daastest.DIGL_OFFR --hive-drop-import-delims --hive-overwrite -m 1
+
+
+
+sqoop import --driver com.teradata.jdbc.TeraDriver --connect 'jdbc:teradata://GDWPRODP/DATABASE=tableau_vm' --username E1539525 --password bigmac20151 --table ADVT_COOP_HRCY --hive-import --hive-table daastest.ADVT_COOP_HRCY --hive-drop-import-delims --hive-overwrite -m 1
+
+
+
+
+sqoop import --driver com.teradata.jdbc.TeraDriver --connect 'jdbc:teradata://GDWPRODP/DATABASE=MSTR_VM' --username E1539525 --password bigmac20151 --query 'select DMSLD_MENU_ITM.SLD_MENU_ITM_ID,DMSLD_MENU_ITM.TERR_CD,DMSLD_MENU_ITM.SLD_MENU_ITM_NA ,DMITM_CHAR_CD_LKUP.PRD_FMLY_GRP_CD,DMITM_PRD_FMLY_GRP_LKUP.PRD_FMLY_GRP_DS from  DMSLD_MENU_ITM JOIN DMITM_CHAR_CD_LKUP on DMSLD_MENU_ITM.SLD_MENU_ITM_ID=DMITM_CHAR_CD_LKUP.SLD_MENU_ITM_ID and DMSLD_MENU_ITM.TERR_CD=DMITM_CHAR_CD_LKUP.TERR_CD JOIN DMITM_PRD_FMLY_GRP_LKUP on DMITM_CHAR_CD_LKUP.PRD_FMLY_GRP_CD=DMITM_PRD_FMLY_GRP_LKUP.PRD_FMLY_GRP_CD WHERE $CONDITIONS' --target-dir /daastest/scoop3 -m 1
+
+sqoop import --driver com.teradata.jdbc.TeraDriver --connect jdbc:teradata://GDWPRODP/DATABASE=RMDW_tables --username DCDS_HDP_010001 --password g0Hawks --table DIGL_OFFR --target-dir /daastest/sqoop6 --fields-terminated-by '\001' --hive-delims-replacement ' ' -m 1
+
+
+
+sqoop import --driver com.teradata.jdbc.TeraDriver --connect 'jdbc:teradata://GDWPRODP/DATABASE=RMDW_tables' --username DCDS_HDP_010001 --password g0Hawks --table CAL_DT --hive-import --hive-table daastest.CAL_DT --hive-drop-import-delims --hive-overwrite --where "CAL_DT > '2015-01-31'" -m 1
+
+
+
+
+
+sqoop import --driver com.teradata.jdbc.TeraDriver --connect 'jdbc:teradata://GDWPRODP/DATABASE=RMDW_tables' --username DCDS_HDP_010001 --password g0Hawks --query 'SELECT	DIGL_OFFR.DIGL_OFFR_ID,DIGL_OFFR.SRCE_DIGL_OFFR_ID,DIGL_OFFR.XTRN_APLC_INSC_ID,DIGL_OFFR.DIGL_OFFR_SHRT_DS,DIGL_OFFR.DIGL_OFFR_LNG_DS,OREPLACE(DIGL_OFFR.DIGL_OFFR_TYP_NA , X'0a' , '  ') ,DIGL_OFFR.DIGL_OFFR_NA,DIGL_OFFR.PUCH_CARD_TOT_PUCH_QTY,DIGL_OFFR.DIGL_OFFR_STRT_TS,DIGL_OFFR.DIGL_OFFR_END_TS,DIGL_OFFR.DIGL_OFFR_CNFG_ID,DIGL_OFFR.DIGL_OFFR_CAMP_NA,DIGL_OFFR.TERR_CD,DIGL_OFFR.DIGL_OFFR_DPLY_TS,DIGL_OFFR.LOAD_DW_AUDT_ID,DIGL_OFFR.UPDT_DW_AUDT_ID,DIGL_OFFR.DW_FILE_ID FROM DIGL_OFFR WHERE $CONDITIONS' --target-dir /daastest/sqoop6 -m 1
+
+
+
+sqoop import --driver com.teradata.jdbc.TeraDriver --connect jdbc:teradata://GDWPRODP/DATABASE=RMDW_tables --username DCDS_HDP_010001 --password g0Hawks --table DIGL_OFFR --target-dir /daastest/sqoop6 --fields-terminated-by '\001' --hive-delims-replacement ' ' -m 1

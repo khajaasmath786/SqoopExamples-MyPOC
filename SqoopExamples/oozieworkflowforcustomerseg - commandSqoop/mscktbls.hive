@@ -1,0 +1,6 @@
+use daas;
+msck repair table pos_trn;
+msck repair table pos_trn_offr;
+msck repair table pos_trn_itm;
+msck repair table pos_trn_itm_offr;
+

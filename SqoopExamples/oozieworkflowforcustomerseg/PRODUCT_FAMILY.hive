@@ -1,0 +1,17 @@
+use daastest;
+drop table PRODUCT_FAMILY;
+CREATE EXTERNAL TABLE PRODUCT_FAMILY(
+    SLD_MENU_ITM_ID int, 
+    TERR_CD int, 
+    SLD_MENU_ITM_NA string, 
+    PRD_FMLY_GRP_CD int, 
+    PRD_FMLY_GRP_DS string)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '|' 
+  LINES TERMINATED BY '\n' 
+STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  '/user/mc41946/hive/PRODUCT_FAMILY';

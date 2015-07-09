@@ -1,0 +1,30 @@
+use daastest;
+drop table DIGL_OFFR;
+CREATE EXTERNAL TABLE DIGL_OFFR(
+  digl_offr_id bigint, 
+  srce_digl_offr_id bigint, 
+  xtrn_aplc_insc_id int, 
+  digl_offr_shrt_ds string, 
+  digl_offr_lng_ds string, 
+  digl_offr_typ_na string, 
+  digl_offr_na string, 
+  puch_card_tot_puch_qty int, 
+  digl_offr_strt_ts string, 
+  digl_offr_end_ts string, 
+  digl_offr_cnfg_id int, 
+  digl_offr_camp_na string, 
+  terr_cd int, 
+  digl_offr_dply_ts string, 
+  load_dw_audt_id int, 
+  updt_dw_audt_id int, 
+  dw_file_id int)
+ROW FORMAT DELIMITED 
+  FIELDS TERMINATED BY '|' 
+  STORED AS INPUTFORMAT 
+  'org.apache.hadoop.mapred.TextInputFormat' 
+OUTPUTFORMAT 
+  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+LOCATION
+  '/user/mc41946/hive/DIGL_OFFR';
+
+
